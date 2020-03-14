@@ -1,5 +1,5 @@
 # Rencrypt
-这是一个为 `服务端` JavaScript提供的二次加密方案
+这是一个为 `JavaScript` 提供的二次加密/解密方案
 
 已经过功能性测试
 
