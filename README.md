@@ -13,4 +13,4 @@
 
 BUG提交请联系QQ2524333609
 
-(Change Log)[log.md]
+[Changes Log](version.md)
