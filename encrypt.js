@@ -1,57 +1,58 @@
-//字符串转二进制
-function Str2Bin(str) {
-    var buffer = Buffer.from(str);
-    const length = buffer.length;
-    let ret = '';
-    for (let i = 0; i < length; i++) {
-        const bin = Number(buffer[i]).toString(2)
-        ret += '0'.repeat(8 - bin.length) + bin; // 不足八位前置补0
-    }
-    return ret.toString();
-}
-function Bin2Str(bin) {
-    var str = '';
-    for (var i = 0; i < bin.length; i = i + 8) {
-        let s = bin.slice(i, i + 8);
-        s = s.slice(s.indexOf('1'));
-        str = str + s + ' ';
-    }
-    var result = [];
-    var list = str.split(" ");
-    for (var i = 0; i < list.length; i++) {
-        var item = list[i];
-        var asciiCode = parseInt(item, 2);
-        var charValue = String.fromCharCode(asciiCode);
-        result.push(charValue);
-    }
-    return result.join("");
-}
-//字符串转16进制
-function Str2Hex(str) {
-    var val = new Array();
-    var ret = '';
-    for (var i = 0; i < str.length; i++) {
-        val[i] = str.charCodeAt(i).toString(16);
-        if (val[i].length != 2) {
-            val[i] = '0' + val[i];
-        }
-    }
-    for (var i = 0; i < val.length; i++) {
-        ret += val[i];
+function Str2Bin(Str){
+    var ret='';
+    for(let i=0;i<Str.length;i++){
+        let temp=Str.charCodeAt(i).toString(2);
+        //ret+='0'.repeat(8-temp.length)+temp;//原始方法
+        ret+=temp.padStart(8,'0');
     }
     return ret;
 }
-//16进制转字符串
-function Hex2Str(hex) {
-    var str = new Array();
-    for (var i = 0; i < (hex.length / 2); i++) {
-        str[i] = hex.substr(i * 2, 2);
+function Bin2Str(Bin){
+    var ret='';
+    for(let i=0;i<Bin.length;i=i+8){
+        let temp=Bin.slice(i,i+8);
+        temp=parseInt(temp,2);
+        ret+=String.fromCharCode(temp);
     }
-    var val = '';
-    for (var i = 0; i < str.length; i++) {
-        val += String.fromCharCode('0x' + str[i]);
+    return ret;
+}
+function Str2Hex(Str){
+    var ret='';
+    for(let i=0;i<Str.length;i++){
+        let temp=Str.charCodeAt(i).toString(16);
+        //ret+='0'.repeat(2-temp.length)+temp;//原始方法
+        ret+=temp.padStart(2,'0');
     }
-    return val;
+    return ret;
+}
+function Hex2Str(Hex){
+    var ret='';
+    for(let i=0;i<Hex.length;i=i+2){
+        let temp=Hex.slice(i,i+2);
+        temp=parseInt(temp,16);
+        ret+=String.fromCharCode(temp);
+    }
+    return ret;
+}
+function Hex2Bin(Hex){
+    var ret='';
+    for(let i=0;i<Hex.length;i=i+2){
+        let temp=Hex.slice(i,i+2);
+        temp=parseInt(temp,16);
+        temp=temp.toString(2);
+        ret+=temp.padStart(8,'0');
+    }
+    return ret;
+}
+function Bin2Hex(Bin){
+    var ret='';
+    for(let i=0;i<Bin.length;i=i+8){
+        let temp=Bin.slice(i,i+8);
+        temp=parseInt(temp,2);
+        temp=temp.toString(16);
+        ret+=temp.padStart(2,'0');
+    }
+    return ret;
 }
 function UpdateStr(str,substr,position){
     position=position|0;
@@ -70,7 +71,7 @@ function encode(odata, type, param) {
             odata = Str2Bin(odata);
             break;
         case 2:
-            odata = Str2Bin(Hex2Str(odata));
+            odata = Hex2Bin(odata);
             break;
     }
     var posarr = [];//挂空，初始化
@@ -131,4 +132,4 @@ function decode(str){
     }
     return ret;
 }
-module.exports={encode,decode,Bin2Str,Str2Bin,Str2Hex,Hex2Str,TYPE_BIN,TYPE_STR,TYPE_HEX}
+module.exports={encode,decode,Bin2Str,Str2Bin,Str2Hex,Hex2Str,Hex2Bin,Bin2Hex,TYPE_BIN,TYPE_STR,TYPE_HEX}
