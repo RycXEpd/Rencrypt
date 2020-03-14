@@ -62,7 +62,7 @@ function UpdateStr(str,substr,position){
 const TYPE_BIN = 0;
 const TYPE_STR = 1;
 const TYPE_HEX = 2;
-//特征值异变，by Rsteam
+//特征值异变
 function encode(odata, type, param) {
     param = param | {};//设置header
     switch (type) {
