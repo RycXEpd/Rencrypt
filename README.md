@@ -11,6 +11,8 @@
 
 下一版本预计加入:自定义Header&后部附加内容
 
-BUG提交请联系QQ2524333609
+[Rencrypt for Java](https://github.com/RycXEpd/myencrypt-Java)
+
+BUG提交请联系[QQ2524333609](http://wpa.qq.com/msgrd?v=3&uin=2524333609&site=qq&menu=yes)
 
 [Changes Log](version.md)
