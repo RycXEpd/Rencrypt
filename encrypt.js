@@ -77,8 +77,8 @@ function encode(odata, type, param) {
     var posarr = [];//挂空，初始化
     var length = 0;//默认置零
     var data = "";//挂空，初始化
-    //首次循环预定义length
-    for (var i = 0; i < odata.length; i++) { if (odata[i] == 1) { if ((((i + 1).toString(16)).length % 2) == 1) { length = ((i + 1).toString(16)).length + 1; } } }
+    //for (var i = 0; i < odata.length; i++) { if (odata[i] == 1) { if ((((i + 1).toString(16)).length % 2) == 1) { length = ((i + 1).toString(16)).length + 1; } } }
+    length=odata.lastIndexOf('1').toString(16).length;//获取length
     for (var i = 0; i < odata.length; i++) {
         //定位特征值
         if (odata[i] == 1) {
