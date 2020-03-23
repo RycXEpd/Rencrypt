@@ -64,33 +64,43 @@ const TYPE_BIN = 0;
 const TYPE_STR = 1;
 const TYPE_HEX = 2;
 //特征值异变
-function encode(odata, type, param) {
-    param = param | {};//设置header
+function encode(data, type, headerparser) {
+    if(!headerparser||typeof(headerparser)!="function"){
+        headerparser=(datalength,taglength)=>{
+            datalength=datalength.toString(16);
+            datalength='0'.repeat(8-datalength.length)+datalength;
+            taglength=taglength.toString(16);
+            taglength='0'.repeat(8-taglength.length)+taglength;
+            let headerlength=(datalength+taglength).length.toString(16);
+            headerlength='0'.repeat(4-headerlength.length)+headerlength;
+            return headerlength+datalength+taglength;
+        }
+    }
     switch (type) {
         case 1:
-            odata = Str2Bin(odata);
+            data = Str2Bin(data);
             break;
         case 2:
-            odata = Hex2Bin(odata);
+            data = Hex2Bin(data);
             break;
     }
     var posarr = [];//挂空，初始化
     var length = 0;//默认置零
-    var data = "";//挂空，初始化
+    var ret = "";//挂空，初始化
     //for (var i = 0; i < odata.length; i++) { if (odata[i] == 1) { if ((((i + 1).toString(16)).length % 2) == 1) { length = ((i + 1).toString(16)).length + 1; } } }
-    length=odata.lastIndexOf('1').toString(16).length;//获取length
-    for (var i = 0; i < odata.length; i++) {
+    length=data.lastIndexOf('1').toString(16).length;//获取length
+    for (var i = 0; i < data.length; i++) {
         //定位特征值
-        if (odata[i] == 1) {
-            var ostr = (i + 1).toString(16);
-            ostr = '0'.repeat(length - ostr.length) + ostr;
-            posarr.push(ostr);
+        if (data[i] == 1) {
+            var str = (i + 1).toString(16);
+            str = '0'.repeat(length - str.length) + str;
+            posarr.push(str);
         }
         //防止数组超标
         if (i % 255 == 0) {
             while (posarr.length != 0) {
                 var rand = parseInt(Math.random() * posarr.length);
-                data += posarr[rand];
+                ret += posarr[rand];
                 posarr.splice(rand, 1);
             }
         }
@@ -98,35 +108,34 @@ function encode(odata, type, param) {
     //处理剩余数据
     while (posarr.length != 0) {
         var rand = parseInt(Math.random() * posarr.length);
-        data += posarr[rand];
+        ret += posarr[rand];
         posarr.splice(rand, 1);
     }
-    //add header(16-bit)
-    //特征length
-    length = length.toString(16);
-    //格式化header:特征值长度
-    length = '0'.repeat(8 - length.length) + length;
-    //反特征length
-    let dlength = odata.length.toString(16);
-    //格式化header:总长度
-    dlength = '0'.repeat(8 - dlength.length) + dlength;
-    header = dlength + length;
-    data = header + data;
-    return data;
+    //获取header
+    let header=headerparser(data.length,length);
+    ret = header + ret;
+    return ret;
 }
-function decode(str){
+function decode(str,headerparser){
+    if(!headerparser||typeof(headerparser)!="function"){
+        headerparser=(headerstr)=>{
+            let header={datalength:0,taglength:0};
+            header.datalength=parseInt(headerstr.slice(0,8),16);
+            header.taglength=parseInt(headerstr.slice(8,16),16);
+            return header;
+        }
+    }
     str=str.toString();
+    headerlength=parseInt(str.slice(0,4),16);
     //header parser
-    var header={data_length:0,length:0};
-    header.data_length=parseInt(str.slice(0,8),16);
-    header.length=parseInt(str.slice(8,16),16);
-    let data=str.slice(16);
-    var ret='0'.repeat(header.data_length);
+    const header=headerparser(str.slice(4,4+headerlength));
+    let data=str.slice(4+headerlength);
+    var ret='0'.repeat(header.datalength);
     console.log(data.length)
-    for(var i=0;i<data.length;i=i+header.length){
+    for(var i=0;i<data.length;i=i+header.taglength){
         //console.log(i)
         //console.log(data.slice(i,header.length))
-        let position=parseInt(data.slice(i,i+header.length),16);
+        let position=parseInt(data.slice(i,i+header.taglength),16);
         //console.log(position)
         ret=UpdateStr(ret,'1',position);
     }
