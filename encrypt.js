@@ -60,9 +60,9 @@ function UpdateStr(str,substr,position){
     let e=str.slice(position);
     return s+substr+e;
 }
-const TYPE_BIN = 0;
-const TYPE_STR = 1;
-const TYPE_HEX = 2;
+const BIN = 0;
+const STR = 1;
+const HEX = 2;
 //特征值异变
 function encode(data, type, headerparser) {
     if(!headerparser||typeof(headerparser)!="function"){
@@ -141,4 +141,4 @@ function decode(str,headerparser){
     }
     return ret;
 }
-module.exports={encode,decode,Bin2Str,Str2Bin,Str2Hex,Hex2Str,Hex2Bin,Bin2Hex,TYPE_BIN,TYPE_STR,TYPE_HEX}
+module.exports={encode,decode,tools:{Bin2Str,Str2Bin,Str2Hex,Hex2Str,Hex2Bin,Bin2Hex},type:{BIN,STR,HEX}}
