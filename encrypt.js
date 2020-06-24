@@ -65,9 +65,8 @@ const STR = 1;
 const HEX = 2;
 //特征值异变
 function encode(data, type, options) {
-    let opts=options||{};
-    if(!opts.headerparser||typeof(opts.headerparser)!="function"){
-        opts.headerparser=(datalength,taglength)=>{
+    let opts=Object.assign({
+        headerhandler:(function HeaderHandler(datalength,taglength){
             datalength=datalength.toString(16);
             datalength='0'.repeat(8-datalength.length)+datalength;
             taglength=taglength.toString(16);
@@ -75,13 +74,14 @@ function encode(data, type, options) {
             let headerlength=(datalength+taglength).length.toString(16);
             headerlength='0'.repeat(4-headerlength.length)+headerlength;
             return headerlength+datalength+taglength;
-        }
-    }
-    if(!opts.dataparser||typeof(opts.headerparser)!="function"){
-        opts.dataparser=(data)=>{
+        }),
+        databefore: (function BeforeEncode(data) {
             return data;
-        }
-    }
+        }),
+        dataafter: (function AfterEncode(data) {
+            return data;
+        })
+    },options);
     switch (type) {
         case 1:
             data = Str2Bin(data);
@@ -90,7 +90,8 @@ function encode(data, type, options) {
             data = Hex2Bin(data);
             break;
     }
-    data=opts.dataparser(data);
+    //调用before函数
+    data=opts.databefore(data);
     var posarr = [];//挂空，初始化
     var length = 0;//默认置零
     var ret = "";//挂空，初始化
@@ -118,27 +119,36 @@ function encode(data, type, options) {
         ret += posarr[rand];
         posarr.splice(rand, 1);
     }
+    //调用after函数
+    ret=opts.dataafter(ret)
     //获取header
-    let header=headerparser(data.length,length);
+    let header=opts.headerhandler(data.length,length);
     ret = header + ret;
     return ret;
 }
-function decode(str,headerparser){
-    if(!headerparser||typeof(headerparser)!="function"){
-        headerparser=(headerstr)=>{
+function decode(str,options){
+    let opts=Object.assign({
+        headerhandler:(function HeaderHandler(headerstr){
             let header={datalength:0,taglength:0};
             header.datalength=parseInt(headerstr.slice(0,8),16);
             header.taglength=parseInt(headerstr.slice(8,16),16);
             return header;
-        }
-    }
+        }),
+        databefore: (function BeforeDecode(data) {
+            return data;
+        }),
+        dataafter: (function AfterDecode(data) {
+            return data;
+        })
+    },options);
     str=str.toString();
     headerlength=parseInt(str.slice(0,4),16);
     //header parser
-    const header=headerparser(str.slice(4,4+headerlength));
+    const header=opts.headerhandler(str.slice(4,4+headerlength));
     let data=str.slice(4+headerlength);
+    data=opts.databefore(data);
     var ret='0'.repeat(header.datalength);
-    console.log(data.length)
+    //console.log(data.length)
     for(var i=0;i<data.length;i=i+header.taglength){
         //console.log(i)
         //console.log(data.slice(i,header.length))
@@ -146,6 +156,7 @@ function decode(str,headerparser){
         //console.log(position)
         ret=UpdateStr(ret,'1',position);
     }
+    ret=opts.dataafter(ret);
     return ret;
 }
 module.exports={encode,decode,tools:{Bin2Str,Str2Bin,Str2Hex,Hex2Str,Hex2Bin,Bin2Hex},type:{BIN,STR,HEX}}
