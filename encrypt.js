@@ -64,9 +64,10 @@ const BIN = 0;
 const STR = 1;
 const HEX = 2;
 //特征值异变
-function encode(data, type, headerparser) {
-    if(!headerparser||typeof(headerparser)!="function"){
-        headerparser=(datalength,taglength)=>{
+function encode(data, type, options) {
+    let opts=options||{};
+    if(!opts.headerparser||typeof(opts.headerparser)!="function"){
+        opts.headerparser=(datalength,taglength)=>{
             datalength=datalength.toString(16);
             datalength='0'.repeat(8-datalength.length)+datalength;
             taglength=taglength.toString(16);
@@ -74,6 +75,11 @@ function encode(data, type, headerparser) {
             let headerlength=(datalength+taglength).length.toString(16);
             headerlength='0'.repeat(4-headerlength.length)+headerlength;
             return headerlength+datalength+taglength;
+        }
+    }
+    if(!opts.dataparser||typeof(opts.headerparser)!="function"){
+        opts.dataparser=(data)=>{
+            return data;
         }
     }
     switch (type) {
@@ -84,6 +90,7 @@ function encode(data, type, headerparser) {
             data = Hex2Bin(data);
             break;
     }
+    data=opts.dataparser(data);
     var posarr = [];//挂空，初始化
     var length = 0;//默认置零
     var ret = "";//挂空，初始化
