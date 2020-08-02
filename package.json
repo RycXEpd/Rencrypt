@@ -1,0 +1,11 @@
+{
+  "name": "Rencrypt",
+  "version": "1.3.1",
+  "description": "Re-encrypt for anythings",
+  "main": "encrypt.js",
+  "scripts": {
+    "test": "node ./demo.js"
+  },
+  "author": "RycXEpd",
+  "license": "MIT"
+}
