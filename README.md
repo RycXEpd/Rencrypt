@@ -7,9 +7,9 @@
 
 最高支持长度0xffffffff(4294967295)的 `二进制` 文本或长度在536870911以内的 `字符串` (忽略编译器/内存影响)
 
-当前版本 V1.2
+当前版本 V1.3
 
-下一版本(V2.0)预计加入:自定义Header(已完成)&后部附加内容
+V2.0预计加入:自定义Header(已完成)&后部附加内容
 
 [Rencrypt for Java](https://github.com/RycXEpd/myencrypt-Java)
 
