@@ -143,10 +143,10 @@ function decode(str,options){
     },options);
     str=str.toString();
     headerlength=parseInt(str.slice(0,4),16);
+    str=opts.databefore(str);
     //header parser
     const header=opts.headerhandler(str.slice(4,4+headerlength));
     let data=str.slice(4+headerlength);
-    data=opts.databefore(data);
     var ret='0'.repeat(header.datalength);
     //console.log(data.length)
     for(var i=0;i<data.length;i=i+header.taglength){
