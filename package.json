@@ -1,7 +1,7 @@
 {
   "name": "Rencrypt",
   "version": "1.3.1",
-  "description": "Re-encrypt for anythings",
+  "description": "Re-encrypt for anything you want",
   "main": "encrypt.js",
   "scripts": {
     "test": "node ./demo.js"
