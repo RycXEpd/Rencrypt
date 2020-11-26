@@ -60,6 +60,29 @@ function UpdateStr(str,substr,position){
     let e=str.slice(position);
     return s+substr+e;
 }
+//实验性功能，从字符串获取密钥常数
+function GetKeyInt(key){
+    let m_key="";
+    for(let i=0;i<Str.length;i++){
+        let temp=Str.charCodeAt(i).toString(2);//获取ASCII值
+        //ret+='0'.repeat(8-temp.length)+temp;//原始方法
+        m_key+=temp.padStart(8,'0');
+    }
+    let posarr=[];
+    for (var i = 0; i < m_key.length; i++) {
+        //定位特征值
+        if (m_key[i] == 1) {
+            posarr.push(i+1);
+        }
+        //防止数组超标
+        if (i % 255 == 0) {
+            while (posarr.length != 0) {
+                for(let j=1;j<255;j+=2)
+                posarr.splice(rand, 1);
+            }
+        }
+    }
+}
 const BIN = 0;
 const STR = 1;
 const HEX = 2;
