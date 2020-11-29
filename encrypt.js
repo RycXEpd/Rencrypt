@@ -63,21 +63,28 @@ function UpdateStr(str,substr,position){
 //实验性功能，从字符串获取密钥常数
 function GetKeyInt(key){
     let m_key="";
-    for(let i=0;i<Str.length;i++){
-        let temp=Str.charCodeAt(i).toString(2);//获取ASCII值
+    m_key=key.repeat(256/key.length+1).substring(0,256);//repeat&256位截断
+    for(let i=0;i<m_key.length;i++){
+        let temp=m_key.charCodeAt(i).toString(2);//获取ASCII值
         //ret+='0'.repeat(8-temp.length)+temp;//原始方法
         m_key+=temp.padStart(8,'0');
     }
     let posarr=[];
+    let jmp=false;
+    let tmp="";
     for (var i = 0; i < m_key.length; i++) {
         //定位特征值
         if (m_key[i] == 1) {
+            jmp=!jmp;
+            if(jmp){
+                continue;//跳过第二次出现的比特位
+            }
             posarr.push(i+1);
         }
         //防止数组超标
         if (i % 255 == 0) {
             while (posarr.length != 0) {
-                for(let j=1;j<255;j+=2)
+                for(let j=1;j<255;j+=1)//删除自动补位，+1即可
                 posarr.splice(rand, 1);
             }
         }
